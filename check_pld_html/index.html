@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>$PLD代币空投查询工具</title>
+    <link rel="stylesheet" href="styles.css"> <!-- 确保这里的路径指向您的CSS文件 -->
+    <script>
+        // JavaScript 函数，用于处理地址并调用API
+        async function get_token_amount(address) {
+            const url = `https://www.pilotdog.tech/api/get_eligible?address=${address}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.data.claimable_amount || "0";
+            } catch (error) {
+                console.error('API 调用出错:', error);
+                return "0";
+            }
+        }
+
+        async function handleAddresses(event) {
+            event.preventDefault(); // 阻止表单默认提交行为
+            const addresses = document.getElementById('addresses').value.split('\n');
+            const resultsArea = document.getElementById('results');
+            resultsArea.innerHTML = ''; // 清空结果区域
+            let totalAmount = 0; // 用于累计所有代币的数量
+
+            for (let address of addresses) {
+                if (address.trim() === "") continue; // 跳过空行
+                const amount = await get_token_amount(address.trim());
+                totalAmount += parseInt(amount, 10); // 累加代币数量
+                const formattedAmount = parseInt(amount, 10).toLocaleString('en-US'); // 格式化数字
+                resultsArea.innerHTML += `地址: ${address}, 代币数量: ${formattedAmount}<br>`;
+            }
+            const formattedTotalAmount = totalAmount.toLocaleString('en-US'); // 格式化总数
+            resultsArea.innerHTML += `<strong>总计代币数量: ${formattedTotalAmount}</strong>`; // 显示总数
+        }
+    </script>
+</head>
+<body>
+    <div style="text-align: center; width: 100%;">
+        <h1>$PLD代币空投查询工具</h1>
+        <form onsubmit="handleAddresses(event)">
+            <label for="addresses">请输入地址列表（每行一个）:</label><br>
+            <textarea id="addresses" rows="10" cols="100"></textarea><br>
+            <input type="submit" value="查询代币数量" />
+        </form>
+        <div id="results"></div>
+    </div>
+</body>
+</html>
