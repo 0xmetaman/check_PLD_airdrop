@@ -7,4 +7,6 @@ https://twitter.com/Pilotdog2049 要在scroll上发布空投。
 
 2，node check_PLD.mjs
 
+check_pld_html 子目录是在线网页版本。
+
 免责声明：本脚本只是根据官方提供的API，来批量查询，未存储任何你的个人信息，项目是否靠谱，请DYOR.
